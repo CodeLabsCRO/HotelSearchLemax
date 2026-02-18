@@ -64,3 +64,6 @@ secrets.json
 # Entity Framework migrations (keep them, but ignore local db files)
 *.mdf
 *.ldf
+
+# hzzweb reference project (not part of this solution)
+hzzweb/

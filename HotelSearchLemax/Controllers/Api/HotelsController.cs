@@ -1,11 +1,15 @@
 using HotelSearchLemax.Core.DTOs;
 using HotelSearchLemax.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelSearchLemax.Controllers.Api;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(AuthenticationSchemes = $"{JwtBearerDefaults.AuthenticationScheme},{CookieAuthenticationDefaults.AuthenticationScheme}")]
 public class HotelsController : ControllerBase
 {
     private readonly IHotelService _hotelService;
