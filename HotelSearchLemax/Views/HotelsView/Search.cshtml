@@ -1,0 +1,100 @@
+@{
+    ViewData["Title"] = "Hotel Search";
+}
+
+<div class="hotel-search-page">
+    <!-- Search Header -->
+    <div class="search-header bg-light p-3 mb-3">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-4">
+                    <h4 class="mb-0">Hotel Search</h4>
+                    <small id="resultsCount" class="text-muted">Loading...</small>
+                </div>
+                <div class="col-md-8">
+                    <div class="d-flex gap-2 flex-wrap justify-content-end">
+                        <!-- Geolocate Button -->
+                        <button type="button" id="Geolocate" class="btn btn-warning">
+                            <i class="bi bi-geo-alt-fill"></i> Geolocate Me
+                        </button>
+
+                        <!-- Radius Form (hidden until geolocated) -->
+                        <form class="radius-form d-none d-flex gap-2" id="radiusForm">
+                            <div class="input-group" style="width: 150px;">
+                                <input type="number" min="1" max="500" step="1" name="searchRadius"
+                                       class="form-control" value="10" id="searchRadius" />
+                                <span class="input-group-text">km</span>
+                            </div>
+                            <button type="submit" class="btn btn-warning">Update</button>
+                        </form>
+
+                        <!-- Search Form -->
+                        <form id="searchForm" class="d-flex gap-2">
+                            <input type="text" class="form-control" name="searchKeywords" id="searchKeywords"
+                                   placeholder="Search hotels..." style="width: 200px;">
+                            <button type="submit" class="btn btn-primary">Search</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sorting Options -->
+    <div class="sorting-options bg-white border-bottom p-2 mb-3">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-auto">
+                    <label class="form-label mb-0 me-2">Sort by:</label>
+                </div>
+                <div class="col-auto">
+                    <select id="sortBy" class="form-select form-select-sm" style="width: auto;">
+                        <option value="Score" selected>Best Match (Score)</option>
+                        <option value="Price">Price</option>
+                        <option value="Distance">Distance</option>
+                        <option value="Name">Name</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <select id="sortDirection" class="form-select form-select-sm" style="width: auto;">
+                        <option value="Asc" selected>Ascending</option>
+                        <option value="Desc">Descending</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Map Column -->
+            <div class="col-lg-8 mb-3">
+                <div id="hotel-map" style="height: 600px; width: 100%; border-radius: 8px;"></div>
+            </div>
+
+            <!-- Hotel List Column -->
+            <div class="col-lg-4">
+                <div id="loading" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Loading hotels...</p>
+                </div>
+                <div class="hotel-list" style="max-height: 600px; overflow-y: auto;">
+                    <!-- Hotels will be loaded here via JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAvXw-Bc4B76Z63bF4lAMjRumEhgYAZK4A"></script>
+    <script src="~/js/hotel-maps.js"></script>
+    <script>
+        $(document).ready(function () {
+            initHotelMaps();
+        });
+    </script>
+}

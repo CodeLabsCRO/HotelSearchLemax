@@ -1,0 +1,56 @@
+@model HotelSearchLemax.Core.Entities.Hotel
+
+@{
+    ViewData["Title"] = "Create Hotel";
+}
+
+<h1>Create Hotel</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label"></label>
+                <input asp-for="Name" class="form-control" placeholder="Enter hotel name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Price" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text">€</span>
+                    <input asp-for="Price" class="form-control" placeholder="0.00" step="0.01" min="0" />
+                </div>
+                <span asp-validation-for="Price" class="text-danger"></span>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Latitude" class="form-label"></label>
+                    <input asp-for="Latitude" class="form-control" placeholder="-90 to 90" step="any" />
+                    <span asp-validation-for="Latitude" class="text-danger"></span>
+                    <small class="text-muted">Range: -90 to 90</small>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="Longitude" class="form-label"></label>
+                    <input asp-for="Longitude" class="form-control" placeholder="-180 to 180" step="any" />
+                    <span asp-validation-for="Longitude" class="text-danger"></span>
+                    <small class="text-muted">Range: -180 to 180</small>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <button type="submit" class="btn btn-primary">Create Hotel</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

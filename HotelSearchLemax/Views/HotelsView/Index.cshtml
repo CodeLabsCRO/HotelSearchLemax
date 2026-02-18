@@ -1,0 +1,248 @@
+@model HotelSearchLemax.Models.HotelIndexViewModel
+
+@{
+    ViewData["Title"] = "Hotels Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Hotels</h1>
+    <a asp-action="Create" class="btn btn-primary">Add New Hotel</a>
+</div>
+
+<!-- Search, Sort, and Per Page Controls -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" asp-action="Index" class="row g-3 align-items-end">
+            <!-- Search -->
+            <div class="col-md-4">
+                <label for="searchTerm" class="form-label">Search</label>
+                <input type="text" class="form-control" id="searchTerm" name="searchTerm"
+                       value="@Model.SearchTerm" placeholder="Search by name...">
+            </div>
+
+            <!-- Sort By -->
+            <div class="col-md-2">
+                <label for="sortBy" class="form-label">Sort By</label>
+                <select class="form-select" id="sortBy" name="sortBy">
+                    <option value="Name" selected="@(Model.SortBy == "Name")">Name</option>
+                    <option value="Price" selected="@(Model.SortBy == "Price")">Price</option>
+                    <option value="Id" selected="@(Model.SortBy == "Id")">ID</option>
+                    <option value="Latitude" selected="@(Model.SortBy == "Latitude")">Latitude</option>
+                    <option value="Longitude" selected="@(Model.SortBy == "Longitude")">Longitude</option>
+                </select>
+            </div>
+
+            <!-- Sort Direction -->
+            <div class="col-md-2">
+                <label for="sortDirection" class="form-label">Direction</label>
+                <select class="form-select" id="sortDirection" name="sortDirection">
+                    <option value="Asc" selected="@(Model.SortDirection == "Asc")">Ascending</option>
+                    <option value="Desc" selected="@(Model.SortDirection == "Desc")">Descending</option>
+                </select>
+            </div>
+
+            <!-- Per Page -->
+            <div class="col-md-2">
+                <label for="pageSize" class="form-label">Per Page</label>
+                <select class="form-select" id="pageSize" name="pageSize">
+                    @foreach (var size in HotelSearchLemax.Models.HotelIndexViewModel.PageSizeOptions)
+                    {
+                        <option value="@size" selected="@(Model.PageSize == size)">@size</option>
+                    }
+                </select>
+            </div>
+
+            <!-- Submit -->
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">Apply</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results Info -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <p class="text-muted mb-0">
+        Showing @((Model.PageNumber - 1) * Model.PageSize + 1)-@(Math.Min(Model.PageNumber * Model.PageSize, Model.TotalCount))
+        of @Model.TotalCount hotels
+        @if (!string.IsNullOrEmpty(Model.SearchTerm))
+        {
+            <span> for "<strong>@Model.SearchTerm</strong>"</span>
+        }
+    </p>
+    @if (!string.IsNullOrEmpty(Model.SearchTerm))
+    {
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary">Clear Search</a>
+    }
+</div>
+
+@if (!Model.Hotels.Any())
+{
+    <div class="alert alert-info">
+        @if (!string.IsNullOrEmpty(Model.SearchTerm))
+        {
+            <span>No hotels found matching "<strong>@Model.SearchTerm</strong>". <a asp-action="Index">Clear search</a></span>
+        }
+        else
+        {
+            <span>No hotels found. <a asp-action="Create">Create your first hotel</a>.</span>
+        }
+    </div>
+}
+else
+{
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="Id"
+                       asp-route-sortDirection="@(Model.SortBy == "Id" && Model.SortDirection == "Asc" ? "Desc" : "Asc")"
+                       asp-route-pageSize="@Model.PageSize"
+                       class="text-white text-decoration-none">
+                        ID @(Model.SortBy == "Id" ? (Model.SortDirection == "Asc" ? "▲" : "▼") : "")
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="Name"
+                       asp-route-sortDirection="@(Model.SortBy == "Name" && Model.SortDirection == "Asc" ? "Desc" : "Asc")"
+                       asp-route-pageSize="@Model.PageSize"
+                       class="text-white text-decoration-none">
+                        Name @(Model.SortBy == "Name" ? (Model.SortDirection == "Asc" ? "▲" : "▼") : "")
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="Price"
+                       asp-route-sortDirection="@(Model.SortBy == "Price" && Model.SortDirection == "Asc" ? "Desc" : "Asc")"
+                       asp-route-pageSize="@Model.PageSize"
+                       class="text-white text-decoration-none">
+                        Price @(Model.SortBy == "Price" ? (Model.SortDirection == "Asc" ? "▲" : "▼") : "")
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="Latitude"
+                       asp-route-sortDirection="@(Model.SortBy == "Latitude" && Model.SortDirection == "Asc" ? "Desc" : "Asc")"
+                       asp-route-pageSize="@Model.PageSize"
+                       class="text-white text-decoration-none">
+                        Latitude @(Model.SortBy == "Latitude" ? (Model.SortDirection == "Asc" ? "▲" : "▼") : "")
+                    </a>
+                </th>
+                <th>
+                    <a asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="Longitude"
+                       asp-route-sortDirection="@(Model.SortBy == "Longitude" && Model.SortDirection == "Asc" ? "Desc" : "Asc")"
+                       asp-route-pageSize="@Model.PageSize"
+                       class="text-white text-decoration-none">
+                        Longitude @(Model.SortBy == "Longitude" ? (Model.SortDirection == "Asc" ? "▲" : "▼") : "")
+                    </a>
+                </th>
+                <th style="width: 200px;">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Hotels)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>€@item.Price.ToString("F2")</td>
+                    <td>@item.Latitude.ToString("F6")</td>
+                    <td>@item.Longitude.ToString("F6")</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-info">Details</a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    @if (Model.TotalPages > 1)
+    {
+        <nav aria-label="Hotel pagination">
+            <ul class="pagination justify-content-center">
+                <!-- First Page -->
+                <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="@Model.SortBy"
+                       asp-route-sortDirection="@Model.SortDirection"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-pageNumber="1">First</a>
+                </li>
+
+                <!-- Previous Page -->
+                <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="@Model.SortBy"
+                       asp-route-sortDirection="@Model.SortDirection"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-pageNumber="@(Model.PageNumber - 1)">Previous</a>
+                </li>
+
+                <!-- Page Numbers -->
+                @{
+                    var startPage = Math.Max(1, Model.PageNumber - 2);
+                    var endPage = Math.Min(Model.TotalPages, Model.PageNumber + 2);
+                }
+                @for (var i = startPage; i <= endPage; i++)
+                {
+                    <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-sortBy="@Model.SortBy"
+                           asp-route-sortDirection="@Model.SortDirection"
+                           asp-route-pageSize="@Model.PageSize"
+                           asp-route-pageNumber="@i">@i</a>
+                    </li>
+                }
+
+                <!-- Next Page -->
+                <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="@Model.SortBy"
+                       asp-route-sortDirection="@Model.SortDirection"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-pageNumber="@(Model.PageNumber + 1)">Next</a>
+                </li>
+
+                <!-- Last Page -->
+                <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                    <a class="page-link" asp-action="Index"
+                       asp-route-searchTerm="@Model.SearchTerm"
+                       asp-route-sortBy="@Model.SortBy"
+                       asp-route-sortDirection="@Model.SortDirection"
+                       asp-route-pageSize="@Model.PageSize"
+                       asp-route-pageNumber="@Model.TotalPages">Last</a>
+                </li>
+            </ul>
+        </nav>
+    }
+}
+
+@section Scripts {
+    <script>
+        // Auto-submit form when dropdowns change
+        document.getElementById('sortBy').addEventListener('change', function() {
+            this.form.submit();
+        });
+        document.getElementById('sortDirection').addEventListener('change', function() {
+            this.form.submit();
+        });
+        document.getElementById('pageSize').addEventListener('change', function() {
+            this.form.submit();
+        });
+    </script>
+}
